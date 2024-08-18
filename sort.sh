@@ -30,7 +30,7 @@ diff $(cat ./follower/last.txt) $(cat ./follower/recent.txt) >> ./diff.txt
 echo " " >> ./diff.txt
 echo $(grep -o 'screen_name' ./following/$TIME.txt | wc -l)' Following, Diff:' >> ./diff.txt
 diff $(cat ./following/last.txt) $(cat ./following/recent.txt) >> ./diff.txt
-sed -i 's/"//g' ./diff.txt
+sed -i 's/"/`/g' ./diff.txt
 python3 ./tgbot.py
 clear
 rm -rf ./temp/*

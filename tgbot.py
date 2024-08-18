@@ -16,36 +16,14 @@ TOKEN, USER_ID = get_token_and_user_id()
 
 bot = Bot(token=TOKEN)
 
-def escape_markdown(text: str) -> str:
-    return text.replace('_', '\\_')\
-               .replace('*', '\\*')\
-               .replace('[', '\\[')\
-               .replace(']', '\\]')\
-               .replace('(', '\\(')\
-               .replace(')', '\\)')\
-               .replace('~', '\\~')\
-               .replace('`', '\\`')\
-               .replace('>', '\\>')\
-               .replace('#', '\\#')\
-               .replace('+', '\\+')\
-               .replace('-', '\\-')\
-               .replace('=', '\\=')\
-               .replace('|', '\\|')\
-               .replace('{', '\\{')\
-               .replace('}', '\\}')\
-               .replace('.', '\\.')\
-               .replace('!', '\\!')
-
 async def send_file_content():
     try:
-        with open('./diff.txt', 'r') as file:
+        with open('diff.txt', 'r') as file:
             content = file.read()
-
-        escaped_content = escape_markdown(content)
 
         await bot.send_message(
             chat_id=USER_ID,
-            text=escaped_content,
+            text=content,
             parse_mode=ParseMode.MARKDOWN
         )
         print("File content sent successfully!")
