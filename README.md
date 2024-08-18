@@ -44,7 +44,11 @@ You must obtain an initial version of the follow list to use this script.
 6. Move the json file from the Download folder to the path `follower/json/init.json` and `following/json/init.json`.
 7. Edit `follower/json/recent.txt` and `following/json/recent.txt` then fill in the absolute path corresponding to json.
 
-# Push to Telegram bot
+# Configure
+
+Enter your Twitter ID name to `id.txt`
+
+## Push to Telegram bot
 
 Enter your Telegram bot API key to `tgapi.txt`.
 
