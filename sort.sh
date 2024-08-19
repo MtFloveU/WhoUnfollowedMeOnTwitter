@@ -25,11 +25,17 @@ echo ./following/$TIME.txt > ./following/recent.txt
 echo 'Done.'
 clear
 sleep 1
-echo $(grep -o 'screen_name' ./follower/$TIME.txt | wc -l)' Followers, Diff:' > ./diff.txt
-diff $(cat ./follower/last.txt) $(cat ./follower/recent.txt) >> ./diff.txt
+echo '**'$(grep -o 'screen_name' ./follower/$TIME.txt | wc -l)' Followers, Diff:''**' > ./diff.txt
+echo "Unfollowers: " >> ./diff.txt
+diff $(cat ./follower/last.txt) $(cat ./follower/recent.txt) | grep '<' >> ./diff.txt
+echo "New Followers: " >> ./diff.txt
+diff $(cat ./follower/last.txt) $(cat ./follower/recent.txt) | grep '>' >> ./diff.txt
 echo " " >> ./diff.txt
-echo $(grep -o 'screen_name' ./following/$TIME.txt | wc -l)' Following, Diff:' >> ./diff.txt
-diff $(cat ./following/last.txt) $(cat ./following/recent.txt) >> ./diff.txt
+echo '**'$(grep -o 'screen_name' ./following/$TIME.txt | wc -l)' Following, Diff:''**' >> ./diff.txt
+echo "Unfollowing: " >> ./diff.txt
+diff $(cat ./following/last.txt) $(cat ./following/recent.txt) | grep '<' >> ./diff.txt
+echo "New Following: " >> ./diff.txt
+diff $(cat ./following/last.txt) $(cat ./following/recent.txt) | grep '>' >> ./diff.txt
 sed -i 's/"/`/g' ./diff.txt
 python3 ./tgbot.py
 clear
