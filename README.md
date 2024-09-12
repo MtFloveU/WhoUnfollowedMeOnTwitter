@@ -2,10 +2,14 @@
 
 A Linux script to check the diff of your X/Twitter follower/following list.
 
+# Contact Me
+
+Contact me on [Twitter](https://x.com/Akirameru_QAQ) @Akirameru_QAQ.
+
 # Warning
 
 The script is for my personal use. It may cause bugs and errors when run on your computer. Make sure that you can understand the code's meaning and make changes when necessary.
-
+You can edit the code and run this script without a VNC Server.
 # Requirements
 
 - A Linux computer
@@ -53,7 +57,3 @@ Enter your Twitter ID name to `id.txt`
 Enter your Telegram bot API key to `tgapi.txt`.
 
 Enter your Telegram User ID (a number) to `tguserid.txt`
-
-# Contact Me
-
-Contact me on [Twitter](https://x.com/Akirameru_QwQ) @Akirameru_QwQ.
