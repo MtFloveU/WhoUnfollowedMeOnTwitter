@@ -4,7 +4,7 @@ A Linux script to check the diff of your X/Twitter follower/following list.
 
 # Contact Me
 
-Contact me on [Twitter](https://x.com/Akirameru_QAQ) @Akirameru_QAQ.
+Contact me on [Twitter](https://x.com/Hot_Wave_Flow) @Hot_Wave_Flow.
 
 # Warning
 
