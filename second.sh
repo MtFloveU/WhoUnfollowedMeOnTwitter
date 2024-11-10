@@ -10,7 +10,7 @@ sleep 2
 echo "Following fetched. Exporting..."
 ./get_debug_url.sh | xargs -I {} python3 ./export-2.py {} > /dev/null
 sleep 5
-FOLDER_PATH="/home/akira/Downloads"
+FOLDER_PATH=$(realpath ~/Downloads)
 while true; do
     if ls "$FOLDER_PATH"/*Following*.json 1> /dev/null 2>&1; then
         echo "Found JSON file."
