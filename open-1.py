@@ -18,7 +18,7 @@ async def send_js_code(uri, script):
         print(response)
 
 async def main(uri):
-    with open('id.txt', 'r') as file:
+    with open('info/id.txt', 'r') as file:
         id_value = file.read().strip()
 
     scripts = [

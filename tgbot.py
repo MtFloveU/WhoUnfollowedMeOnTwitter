@@ -6,9 +6,9 @@ from telegram.constants import ParseMode
 nest_asyncio.apply()
 
 def get_token_and_user_id():
-    with open('./tgapikey.txt', 'r') as token_file:
+    with open('./info/tgapikey.txt', 'r') as token_file:
         token = token_file.read().strip()
-    with open('./tguserid.txt', 'r') as user_id_file:
+    with open('./info/tguserid.txt', 'r') as user_id_file:
         user_id = int(user_id_file.read().strip())
     return token, user_id
 

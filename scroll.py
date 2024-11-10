@@ -45,8 +45,8 @@ async def check_page_content(uri, target_number):
 
         # 计算范围
         target_number = int(target_number)
-        lower_bound = target_number - 10
-        upper_bound = target_number + 10
+        lower_bound = target_number - 2
+        upper_bound = target_number + 2
 
         # 查找是否有数字在目标范围内
         found = any(lower_bound <= int(match) <= upper_bound

@@ -21,9 +21,10 @@ async def main(uri):
     # JavaScript 命令列表
     scripts = [
         "document.querySelector('.btn.btn-sm.p-0.w-9.h-9').click();",
-        "document.querySelector('.checkbox').click();",
-        "document.querySelector('.btn.btn-primary').click();",
-        "document.querySelectorAll('.btn.btn-primary')[1].click();"
+        "document.querySelector('.btn.btn-neutral.btn-ghost').click();",
+        "document.querySelectorAll('.btn.btn-sm.p-0.w-9.h-9')[1].click();",
+        "document.querySelectorAll('.btn.btn-neutral.btn-ghost')[1].click();",
+        "location.reload(true);"
     ]
 
     # 执行每个命令，并在命令之间等待一秒

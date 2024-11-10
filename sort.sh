@@ -1,42 +1,51 @@
 #!/bin/bash
-echo 'Processing...'
+echo 'Processing JSON files...'
+sleep 1
 TIME=$(date +"%Y-%m-%d-%H-%M-%S")
-[ ! -s ./follower/last.txt ] && cat ./follower/json/init.json | grep 'screen_name' | sort > ./follower/init.txt
-[ ! -s ./follower/last.txt ] && echo "./follower/init.txt" > ./follower/recent.txt
-mv ~/Downloads/twitter-Followers* ./follower/json/$TIME.json
-mv $(cat ./follower/json/last.txt) ./follower/json/old/
-mv ./follower/json/recent.txt ./follower/json/last.txt
-echo ./follower/json/$TIME.json > ./follower/json/recent.txt
+#[ ! -s ./follower/last.txt ] && cat ./follower/init.json | grep 'screen_name' | sort > ./follower/init.txt
+#[ ! -s ./follower/last.txt ] && echo "./follower/init.txt" > ./follower/recent.txt
+
+#move json from download folder
+mv ~/Downloads/twitter-Followers* ./follower/$TIME.json
+mv ~/Downloads/twitter-Following* ./following/$TIME.json
+#move old json
 mv $(cat ./follower/last.txt) ./follower/old/
-cat ./follower/json/$TIME.json | grep 'screen_name' | sort > ./follower/$TIME.txt
-mv ./follower/recent.txt ./follower/last.txt
-echo ./follower/$TIME.txt > ./follower/recent.txt
-sleep 2
-[ ! -s ./following/last.txt ] && cat ./following/json/init.json | grep 'screen_name' | sort > ./following/init.txt
-[ ! -s ./following/last.txt ] && echo "./following/init.txt" > ./following/recent.txt
-mv ~/Downloads/twitter-Following* ./following/json/$TIME.json
-mv $(cat ./following/json/last.txt) ./following/json/old/
-mv ./following/json/recent.txt ./following/json/last.txt
-echo ./following/json/$TIME.json > ./following/json/recent.txt
 mv $(cat ./following/last.txt) ./following/old/
-cat ./following/json/$TIME.json | grep 'screen_name' | sort > ./following/$TIME.txt
+#replace json status
+mv ./follower/recent.txt ./follower/last.txt
+echo ./follower/$TIME.json > ./follower/recent.txt
 mv ./following/recent.txt ./following/last.txt
-echo ./following/$TIME.txt > ./following/recent.txt
-echo 'Done.'
+echo ./following/$TIME.json > ./following/recent.txt
+echo 'Loading diff...'
+sleep 1
 clear
 sleep 1
-echo '**'$(grep -o 'screen_name' ./follower/$TIME.txt | wc -l)' Followers, Diff:''**' > ./diff.txt
+echo "🕒Time: "$(date +"%Y-%m-%d %H:%M:%S")" CST" > ./diff.txt
+echo '*'$(grep -o 'screen_name' ./follower/$TIME.json | wc -l)' Followers*' >> ./diff.txt
 echo "Unfollowers: " >> ./diff.txt
-diff $(cat ./follower/last.txt) $(cat ./follower/recent.txt) | grep '<' >> ./diff.txt
-echo "New Followers: " >> ./diff.txt
-diff $(cat ./follower/last.txt) $(cat ./follower/recent.txt) | grep '>' >> ./diff.txt
+
+#diff follower
+diff <(jq -r .[].id "$(cat ./follower/last.txt)") <(jq -r .[].id "$(cat ./follower/recent.txt)") | grep '^<' | sed 's/^< //' > temp/tempid.txt
+while read id; do
+  name=$(jq -r --arg id "$id" '.[] | select(.id == $id) | .name' $(cat ./follower/last.txt))
+  screen_name=$(jq -r --arg id "$id" '.[] | select(.id == $id) | .screen_name' $(cat ./follower/last.txt))
+  echo "$name @\`$screen_name\`" >> diff.txt
+done < temp/tempid.txt
+rm temp/tempid.txt
+
 echo " " >> ./diff.txt
-echo '**'$(grep -o 'screen_name' ./following/$TIME.txt | wc -l)' Following, Diff:''**' >> ./diff.txt
-echo "Unfollowing: " >> ./diff.txt
-diff $(cat ./following/last.txt) $(cat ./following/recent.txt) | grep '<' >> ./diff.txt
-echo "New Following: " >> ./diff.txt
-diff $(cat ./following/last.txt) $(cat ./following/recent.txt) | grep '>' >> ./diff.txt
-sed -i 's/"/`/g' ./diff.txt
+echo '*'$(grep -o 'screen_name' ./following/$TIME.json | wc -l)' Followings*' >> ./diff.txt
+echo "Unfollowings: " >> ./diff.txt
+
+#diff following
+diff <(jq -r .[].id "$(cat ./following/last.txt)") <(jq -r .[].id "$(cat ./following/recent.txt)") | grep '^<' | sed 's/^< //' > temp/tempid.txt
+while read id; do
+  name=$(jq -r --arg id "$id" '.[] | select(.id == $id) | .name' $(cat ./following/last.txt))
+  screen_name=$(jq -r --arg id "$id" '.[] | select(.id == $id) | .screen_name' $(cat ./following/last.txt))
+  echo "$name @\`$screen_name\`" >> diff.txt
+done < temp/tempid.txt
+rm temp/tempid.txt
+
 python3 ./tgbot.py
 clear
 rm -rf ./temp/*

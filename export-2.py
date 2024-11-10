@@ -21,6 +21,7 @@ async def main(uri):
     # JavaScript 命令列表
     scripts = [
         "document.querySelectorAll('.btn.btn-sm.p-0.w-9.h-9')[1].click();",
+        "document.querySelector('.checkbox').click();",
         "document.querySelector('.btn.btn-primary').click();",
         "document.querySelectorAll('.btn.btn-primary')[1].click();"
     ]

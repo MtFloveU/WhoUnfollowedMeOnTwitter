@@ -9,6 +9,7 @@ python3 ./scroll-2.py
 sleep 2
 echo "Following fetched. Exporting..."
 ./get_debug_url.sh | xargs -I {} python3 ./export-2.py {} > /dev/null
+sleep 5
 FOLDER_PATH="/home/akira/Downloads"
 while true; do
     if ls "$FOLDER_PATH"/*Following*.json 1> /dev/null 2>&1; then
@@ -16,12 +17,13 @@ while true; do
         break
     else
         echo "JSON file not found. Retrying..."
-        sleep 1
+        sleep 2
+	./get_debug_url.sh | xargs -I {} python3 ./export-2.py {}
     fi
 done
 echo "Still working..."
 pkill -f chromium
-./sort.sh
-sleep 1
 pkill -f vnc
+clear
+./sort.sh
 exit 0
