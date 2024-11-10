@@ -61,10 +61,6 @@ Enter your Telegram bot API key to `info/tgapi.txt`.
 
 Enter your Telegram User ID (a number) to `info/tguserid.txt`
 
-
-
 # **Demonstration video**
 
-<div>
-
-</div>
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/AbbO1sLJ5GM/0.jpg)](https://www.youtube.com/watch?v=AbbO1sLJ5GM)
