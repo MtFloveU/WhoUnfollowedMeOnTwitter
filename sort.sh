@@ -45,7 +45,10 @@ while read id; do
   echo "\`$name\` @\`$screen_name\`" >> diff.txt
 done < temp/tempid.txt
 rm temp/tempid.txt
-
+7z u -t7z -mx=3 follower/old.7z follower/old/*
+7z u -t7z -mx=3 following/old.7z following/old/*
+rm -f follower/old/*
+rm -f following/old/*
 python3 ./tgbot.py
 clear
 rm -rf ./temp/*
