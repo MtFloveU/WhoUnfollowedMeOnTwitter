@@ -20,7 +20,7 @@ echo 'Loading diff...'
 sleep 1
 clear
 sleep 1
-echo "🕒Time: "$(date +"%Y-%m-%d %H:%M:%S")" CST" > ./diff.txt
+echo "🕒Time: "$(date +"%Y-%m-%d %H:%M:%S")" "$(date +%Z)"" > ./diff.txt
 echo '*'$(grep -o 'screen_name' ./follower/$TIME.json | wc -l)' Followers*' >> ./diff.txt
 echo "Unfollowers: " >> ./diff.txt
 
@@ -29,7 +29,7 @@ diff <(jq -r .[].id "$(cat ./follower/last.txt)") <(jq -r .[].id "$(cat ./follow
 while read id; do
   name=$(jq -r --arg id "$id" '.[] | select(.id == $id) | .name' $(cat ./follower/last.txt))
   screen_name=$(jq -r --arg id "$id" '.[] | select(.id == $id) | .screen_name' $(cat ./follower/last.txt))
-  echo "$name @\`$screen_name\`" >> diff.txt
+  echo "\`$name\` @\`$screen_name\`" >> diff.txt
 done < temp/tempid.txt
 rm temp/tempid.txt
 
@@ -42,7 +42,7 @@ diff <(jq -r .[].id "$(cat ./following/last.txt)") <(jq -r .[].id "$(cat ./follo
 while read id; do
   name=$(jq -r --arg id "$id" '.[] | select(.id == $id) | .name' $(cat ./following/last.txt))
   screen_name=$(jq -r --arg id "$id" '.[] | select(.id == $id) | .screen_name' $(cat ./following/last.txt))
-  echo "$name @\`$screen_name\`" >> diff.txt
+  echo "\`$name\` @\`$screen_name\`" >> diff.txt
 done < temp/tempid.txt
 rm temp/tempid.txt
 
