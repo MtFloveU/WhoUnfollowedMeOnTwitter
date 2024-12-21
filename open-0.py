@@ -28,8 +28,8 @@ async def main(uri):
 
     for script in scripts:
         await send_js_code(uri, script)
-        time.sleep(1)
+        await asyncio.sleep(1)
 
 if __name__ == "__main__":
     websocket_url = sys.argv[1]
-    asyncio.get_event_loop().run_until_complete(main(websocket_url))
+    asyncio.run(main(websocket_url))  # 使用 asyncio.run 替代 get_event_loop

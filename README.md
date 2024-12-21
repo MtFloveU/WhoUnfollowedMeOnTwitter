@@ -1,66 +1,93 @@
-# Who unfollowed me on Twitter?
+# Twitter FDAP
 
-A Linux script to check the diff of your X/Twitter follower/following list.
+A Linux script for checking the diff in your X/Twitter follower and following lists.
 
 # Contact Me
 
-Contact me on [Twitter](https://x.com/Ak1raQ_love) @Ak1raQ_love
+Contact me on [Twitter](https://x.com/Ak1raQ_love) @Ak1raQ_love.
 
 # Warning
 
-The script is for my personal use. It may cause bugs and errors when run on your computer. Make sure that you can understand the code's meaning and make changes when necessary.
-You can edit the code and run this script without a VNC Server.
+The script is intended for my personal use. It may cause bugs or errors when run on your computer. Make sure you understand the code and modify it as necessary. You can edit the code and run the script without a VNC server.
 
-You'd better run the vnc server manually first.
+It is recommended to manually start the VNC server first.
+
+**For Chinese users: 请将脚本语言切换为English,否则无法正常运行！**
 
 # Requirements
 
 - A Linux computer
-
-- A VNC Server
-
-- Python3 with websockets module
-
+- A VNC server
+- Python3 with the websockets module
 - Chromium with Tampermonkey installed
-
-- Sign in to your Twitter account in Chromium
-
-- Install and enable [twitter-web-exporter](https://github.com/prinsss/twitter-web-exporter) v1.2.0 in Tampermonkey
-
-- Expend the menu of twitter-web-exporter
-
-- Ports 2, 5902, and 9992 are idle
-
-- 7-zip and jq installed
-
-- Enter your Twitter ID to id.txt
+- Signed in to your Twitter account in Chromium
+- Install and enable [twitter-web-exporter](https://github.com/prinsss/twitter-web-exporter) v1.2.0 in Tampermonkey (Note: Please use my modified `twitter-web-exporter.js` in this FDAP script)
+- Expand the menu in twitter-web-exporter
+- Ports 2, 5902, and 9992 should be available
+- 7-zip, jq, and git installed
+- Enter your Twitter ID in `id.txt`
 
 # Usage
 
-Clone the repository and run the script `first.sh`.
+Clone the repository and run the script `run.sh`.
 
 ## First Run
 
 You must obtain an initial version of the follow list to use this script.
 
-1. Visit https://x.com/[Your-Twitter-ID]/followers/ in Chromium.
+1. Visit [https://x.com/[Your-Twitter-ID]/followers/](https://x.com/%5BYour-Twitter-ID%5D/followers/) in Chromium.
+
 2. Scroll to the bottom of the list.
+
 3. Click the cat icon on the left to expand the menu.
-4. Click the arrowhead on the corresponding row, then check the checkbox on the top, click `Export Data` and `Start Export`.
-5. Use the same method to export the 'followings' list.
-6. Move the json file from the Download folder to the path `follower/init.json` and `following/init.json`.
-7. Edit `follower/recent.txt` and `following/recent.txt` then fill in the absolute path corresponding to json.
 
-# Configure
+4. Click the arrowhead in the corresponding row, check the checkbox at the top, and click `Export Data` then `Start Export`.
 
-Enter your Twitter ID name to `info/id.txt`
+5. Use the same method to export the 'following' list.
+
+6. Run the following commands in the directory of this script:
+   
+   ```bash
+   cd data
+   git config --global init.defaultBranch main
+   git init
+   ```
+   
+   (Alternatively, create a repository on GitHub and run `git clone [Your repo URL]`)
+   
+   Then run:
+
+```bash
+jq -c '.[]' ~/Downloads/twitter-Followers-*.json | while read -r item; do
+  id=$(echo "$item" | jq -r '.id')
+  echo "$item" | jq . > "$source_dir/${id}.json"
+done
+jq -c '.[]' ~/Downloads/twitter-Following-*.json | while read -r item; do
+  id=$(echo "$item" | jq -r '.id')
+  echo "$item" | jq . > "$source_dir/${id}.json"
+done
+```
+
+# Configuration
+
+Enter your Twitter ID in `info/id.txt`.
 
 ## Push to Telegram bot
 
-Enter your Telegram bot API key to `info/tgapi.txt`.
+Enter your Telegram bot API key in `info/tgapi.txt`.
 
-Enter your Telegram User ID (a number) to `info/tguserid.txt`
+Enter your Telegram User ID (a number) in `info/tguserid.txt`.
 
-# **Demonstration video**
+### Push to GitHub repository
 
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/AbbO1sLJ5GM/0.jpg)](https://www.youtube.com/watch?v=AbbO1sLJ5GM)
+Enter the link to your GitHub repository in `info/githubrepo.txt`.
+
+Then, `cd` to the `data` folder and run:
+
+```bash
+git remote set-url origin https://your_username:your_token@[Your repo URL]
+```
+
+# Demonstration Video
+
+Temporarily unavailable.

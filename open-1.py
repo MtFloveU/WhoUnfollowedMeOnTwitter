@@ -22,7 +22,8 @@ async def main(uri):
         id_value = file.read().strip()
 
     scripts = [
-        f"window.open('https://x.com/{id_value}/followers')"
+        f"window.open('https://x.com/{id_value}/followers')",
+        f"window.close('https://x.com/{id_value}')"
     ]
 
     for script in scripts:

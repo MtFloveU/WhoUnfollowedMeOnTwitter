@@ -1,8 +1,8 @@
 import asyncio
 import websockets
 import json
-import re
 import time
+
 
 async def send_js_code(uri, script):
     async with websockets.connect(uri) as websocket:
@@ -18,69 +18,117 @@ async def send_js_code(uri, script):
         response = await websocket.recv()
         return json.loads(response)
 
+
 async def monitor_page(uri, target_number):
+    first_time = True  # 初始时为第一次调用
     while True:
         try:
             found = await check_page_content(uri, target_number)
             if found:
-                print("Exiting script after finding the number.")
+                with open('./temp/fetched-following.txt', 'w') as file:
+                    file.write(str('1'))
                 return
-            await scroll_page(uri)
+            await scroll_page(uri, first_time)
+            first_time = False  # 后续调用不再是第一次
         except websockets.exceptions.ConnectionClosedError as e:
             print(f"Connection closed, retrying: {e}")
             await asyncio.sleep(1)  # 等待1秒后重试连接
 
+
 async def check_page_content(uri, target_number):
     try:
         # 执行 JavaScript 获取页面内容
-        js_code = "Array.from(document.querySelectorAll('.text-sm.text-base-content.leading-5.text-opacity-70.m-0')).map(el => el.innerText).join(' ')"
+        js_code = "parseInt(document.querySelectorAll('.flex.flex-col.flex-grow .text-sm')[1].innerText.trim(), 10);"
         response = await send_js_code(uri, js_code)
 
-        # 解析获取的内容
-        page_content = response.get("result", {}).get("result", {}).get("value", "")
+        # 获取并解析数字
+        value = response.get("result", {}).get("result", {}).get("value")
+        if value is None:
+            print("Failed to extract number from the page.")
+            return False
 
-        # 使用正则表达式提取数字
-        numbers = re.findall(r'\d+', page_content)
-        print(f"Captured numbers: {numbers}")  # 打印捕获到的所有数字
+        value = int(value)
+        print(f"Current fetched count: {value}")
 
         # 计算范围
+        lower_bound = value - 2
+        upper_bound = value + 2
+
+        # 检查目标数字是否在范围内
         target_number = int(target_number)
-        lower_bound = target_number - 2
-        upper_bound = target_number + 2
-
-        # 查找是否有数字在目标范围内
-        found = any(lower_bound <= int(match) <= upper_bound
-                    for match in numbers)
-
-        if found:
-            print(f"Found a number within range: [{lower_bound}-{upper_bound}]")
-            await asyncio.sleep(2)
+        if lower_bound <= target_number <= upper_bound:
+            print(f"Target number {target_number} found!")
             return True
         else:
-            print("No number found within range")
             return False
-    except websockets.exceptions.ConnectionClosedError as e:
-        print(f"WebSocket error: {e}")
-        raise
+    except Exception as e:
+        print(f"Error in check_page_content: {e}")
+        return False
 
-async def scroll_page(uri):
-    async with websockets.connect(uri) as websocket:
-        for _ in range(5):  # 增加滑动次数
-            await send_js_code(uri, "window.scrollBy(0, window.innerHeight * 3)")  # 每次滑动3倍窗口高度
-            await asyncio.sleep(0.5)
-        js_code = "Array.from(document.querySelectorAll('.text-sm.text-base-content.leading-5.text-opacity-70.m-0')).map(el => el.innerText).join(' ')"
-        response = await send_js_code(uri, js_code)
-        page_content = response.get("result", {}).get("result", {}).get("value", "")
-        print(f"Page content after scrolling: {page_content}")
+
+async def scroll_page(uri, first_time):
+    try:
+        if first_time:
+            # 先点击目标链接
+            click_script = """
+                document.querySelectorAll('.css-175oi2r.r-14tvyh0.r-cpa5s6.r-16y2uox a')[2].click();
+                location.reload();
+            """
+            await send_js_code(uri, click_script)
+            await asyncio.sleep(0.5)  # 等待0.5秒，确保页面更新
+
+        async with websockets.connect(uri) as websocket:
+            for _ in range(5):  # 滑动5次
+                # 滑动页面
+                await send_js_code(uri, "window.scrollBy(0, window.innerHeight * 6);")
+
+                # 检测按钮是否存在
+                check_button_js = """
+                const button = document.querySelector('.css-175oi2r.r-4d76ec')?.querySelector('button');
+                if (!button) {
+                    return { exists: false };
+                } else {
+                    return { exists: true };
+                }
+                """
+                button_exists = await send_js_code(uri, check_button_js)
+                exists = button_exists.get("result", {}).get("result", {}).get("value", {}).get("exists", False)
+
+                if exists:
+                    print("Looks like you've hit the Twitter's rate limit. Retrying, this may take a while.")
+                    for i in range(60, -1, -1):
+                        print(f"\rRetrying in {i} seconds...", end="", flush=True)
+                        await asyncio.sleep(1)
+
+                    # 点击按钮
+                    await send_js_code(uri, "document.querySelector('.css-175oi2r.r-4d76ec').querySelector('button').click();")
+
+                await asyncio.sleep(0.2)  # 每次滑动之间等待0.2秒
+
+            # 获取更新后的页面内容
+            js_code = """
+                Array.from(document.querySelectorAll('.text-sm.text-base-content.leading-5.text-opacity-70.m-0'))
+                .map(el => el.innerText).join(' ');
+            """
+            response = await send_js_code(uri, js_code)
+            page_content = response.get("result", {}).get("result", {}).get("value", "")
+            print("Page content collected:", page_content)
+
+    except Exception as e:
+        print(f"Error in scroll_page: {e}")
+
 
 async def main():
+    # 从文件中读取 WebSocket URL
     with open('./temp/debug_url.txt', 'r') as file:
         websocket_url = file.read().strip()
 
+    # 从文件中读取目标数字
     with open('./temp/target_number-2.txt', 'r') as file:
         target_number = file.read().strip()
 
     await monitor_page(websocket_url, target_number)
+
 
 if __name__ == "__main__":
     asyncio.run(main())
