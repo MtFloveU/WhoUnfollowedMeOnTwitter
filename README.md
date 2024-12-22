@@ -70,6 +70,8 @@ You must obtain an initial version of the follow list to use this script.
 
 # Configuration
 
+Create a folder `info`
+
 Enter your Twitter ID in `info/id.txt`.
 
 ## Push to Telegram bot
