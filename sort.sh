@@ -38,7 +38,7 @@ while IFS= read -r id; do
     screen_name=$(jq -r '.screen_name' "$target_file")
     echo "\`$name\` @\`$screen_name\`" >> ./diff.txt
     jq '.removed = "true"' "$target_file" > $target_file-temp.json
-    mv $target_file-temp.json $target_file
+    mv $target_file-temp.json $target_dir/removed/$(basename $target_file)
     echo $id >> ./data/removed_list.txt
   fi
 done < "$source_dir/mutual_unfollow.txt"
@@ -82,8 +82,8 @@ for source_file in "$source_dir"/*.json; do
     target_file="$target_dir/removed/$id.json"
 
     if [[ -f "$target_file" ]]; then
-      name=$(jq -r '.name' "$target_file")
-      screen_name=$(jq -r '.screen_name' "$target_file")
+      name=$(jq -r '.name' "$source_file")
+      screen_name=$(jq -r '.screen_name' "$source_file")
       echo "\`$name\` @\`$screen_name\`" >> ./diff.txt
       rm -f "$target_file"
       removed_list=("${removed_list[@]/$id}")
