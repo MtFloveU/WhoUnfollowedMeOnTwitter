@@ -18,10 +18,10 @@ with open(single_unfollowing_path, 'w') as single_unfollowing_file:
                     with open(source_file_path, 'r') as source_file:
                         source_data = json.load(source_file)
 
-                    following_target = target_data.get('following')
-                    following_source = source_data.get('following')
+                    following_target = str(target_data.get('following'))
+                    following_source = str(source_data.get('following'))
 
-                    if following_target == "true" and (following_source == "false" or following_source is None):
+                    if following_target == "True" and following_source == "None":
                         single_unfollowing_file.write(f"{target_data['id']}\n")
 
                 except json.JSONDecodeError:

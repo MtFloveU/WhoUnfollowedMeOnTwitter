@@ -84,21 +84,19 @@ async def scroll_page(uri, first_time):
 
                 # 检测按钮是否存在
                 check_button_js = """
-                const button = document.querySelector('.css-175oi2r.r-4d76ec')?.querySelector('button');
-                if (!button) {
-                    return { exists: false };
-                } else {
-                    return { exists: true };
-                }
+                (() => {
+                        return document.querySelector('.css-175oi2r.r-sdzlij.r-1phboty.r-rs99b7.r-lrvibr.r-2yi16.r-1qi8awa.r-3pj75a.r-1loqt21.r-o7ynqc.r-6416eg.r-1ny4l3l') !== null;
+                    })();
+
                 """
                 button_exists = await send_js_code(uri, check_button_js)
-                exists = button_exists.get("result", {}).get("result", {}).get("value", {}).get("exists", False)
+                #exists = button_exists.get("result", {}).get("result", {}).get("value", {}).get("exists", True)
 
-                if exists:
+                if button_exists.get('result', {}).get('result', {}).get('value') is True:
                     print("Looks like you've hit the Twitter's rate limit. Retrying, this may take a while.")
                     for i in range(60, -1, -1):
-                        print(f"\rRetrying in {i} seconds...", end="", flush=True)
-                        await asyncio.sleep(1)
+                        print(f"\r{i}", end="", flush=True)
+                        time.sleep(1)
 
                     # 点击按钮
                     await send_js_code(uri, "document.querySelector('.css-175oi2r.r-4d76ec').querySelector('button').click();")
