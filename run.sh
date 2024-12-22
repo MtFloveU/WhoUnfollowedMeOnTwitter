@@ -45,6 +45,8 @@ echo "Exporting..."
 sleep 0.5
 ./sort.sh
 rm -rf ./temp/*
+rm -f ~/Downloads/twitter-Follower*.json
+rm -f ~/Downloads/twitter-Following*.json
 pkill -f chromium
 pkill -f chrome
 pkill -f vncserver
