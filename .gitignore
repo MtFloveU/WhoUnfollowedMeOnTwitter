@@ -1,4 +1,7 @@
 data/*
 info/*
 temp/*
-
+info/
+data/
+temp/
+diff.txt

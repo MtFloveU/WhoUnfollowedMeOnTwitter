@@ -79,13 +79,13 @@ for source_file in "$source_dir"/*.json; do
   id=$(jq -r '.id' "$source_file")
 
   if [[ " ${removed_list[@]} " =~ " $id " ]]; then
-    target_file="$target_dir/$id.json"
+    target_file="$target_dir/removed/$id.json"
 
     if [[ -f "$target_file" ]]; then
       name=$(jq -r '.name' "$target_file")
       screen_name=$(jq -r '.screen_name' "$target_file")
       echo "\`$name\` @\`$screen_name\`" >> ./diff.txt
-      jq 'del(.removed)' "$target_file"
+      rm -f "$target_file"
       removed_list=("${removed_list[@]/$id}")
     fi
   fi
