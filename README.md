@@ -58,7 +58,14 @@ You must obtain an initial version of the follow list to use this script.
    Then run:
    
    ```bash
-   
+   jq -c '.[]' ~/Downloads/twitter-Followers-*.json | while read -r item; do
+     id=$(echo "$item" | jq -r '.id')
+     echo "$item" | jq . > "$source_dir/${id}.json"
+   done
+   jq -c '.[]' ~/Downloads/twitter-Following-*.json | while read -r item; do
+     id=$(echo "$item" | jq -r '.id')
+     echo "$item" | jq . > "$source_dir/${id}.json"
+   done
    ```
 
 # Configuration
