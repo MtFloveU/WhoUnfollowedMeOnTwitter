@@ -81,7 +81,7 @@ async def scroll_page(uri, first_time):
 
                 if button_exists.get('result', {}).get('result', {}).get('value') is True:
                     print("Looks like you've hit the Twitter's rate limit. Retrying, this may take a while.")
-                    for i in range(60, -1, -1):
+                    for i in range(300, -1, -1):
                         print(f"\r{i}", end="", flush=True)
                         time.sleep(1)
 

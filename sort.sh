@@ -39,6 +39,7 @@ while IFS= read -r id; do
     echo "\`$name\` @\`$screen_name\`" >> ./diff.txt
     jq '.removed = "true"' "$target_file" > $target_file-temp.json
     mv $target_file-temp.json $target_dir/removed/$(basename $target_file)
+    rm $target_file
     echo $id >> ./data/removed_list.txt
   fi
 done < "$source_dir/mutual_unfollow.txt"
