@@ -92,7 +92,8 @@ for source_file in "$source_dir"/*.json; do
 done
 
 printf "%s\n" "${removed_list[@]}" > ./data/removed_list.txt
-
+sort -u $target_dir/removed_list.txt | grep -v '^\s*$' > $target_dir/removed_list_temp.txt
+mv $target_dir/removed_list_temp.txt $target_dir/removed_list.txt
 echo "Updating data..."
 python3 sort/upd.py
 

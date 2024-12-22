@@ -24,7 +24,7 @@ It is recommended to manually start the VNC server first.
 - Install and enable [twitter-web-exporter](https://github.com/prinsss/twitter-web-exporter) v1.2.0 in Tampermonkey (Note: Please use my modified `twitter-web-exporter.js` in this FDAP script)
 - Expand the menu in twitter-web-exporter
 - Ports 2, 5902, and 9992 should be available
-- 7-zip, jq, and git installed
+- 7-zip, jq(1.7.1), xterm, and git installed
 - Enter your Twitter ID in `id.txt`
 
 # Usage
@@ -56,17 +56,10 @@ You must obtain an initial version of the follow list to use this script.
    (Alternatively, create a repository on GitHub and run `git clone [Your repo URL]`)
    
    Then run:
-
-```bash
-jq -c '.[]' ~/Downloads/twitter-Followers-*.json | while read -r item; do
-  id=$(echo "$item" | jq -r '.id')
-  echo "$item" | jq . > "$source_dir/${id}.json"
-done
-jq -c '.[]' ~/Downloads/twitter-Following-*.json | while read -r item; do
-  id=$(echo "$item" | jq -r '.id')
-  echo "$item" | jq . > "$source_dir/${id}.json"
-done
-```
+   
+   ```bash
+   
+   ```
 
 # Configuration
 
